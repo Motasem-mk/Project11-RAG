@@ -1,4 +1,5 @@
 
+
 # Concevez et déployez un système RAG — POC (OpenAgenda → FAISS → LangChain + Mistral)
 
 A Retrieval-Augmented Generation (RAG) assistant that recommends cultural events from **OpenAgenda** data.
@@ -18,30 +19,30 @@ Stack: **Python · LangChain · FAISS · Mistral**.
 ```mermaid
 flowchart LR
   subgraph A[Offline build]
-    OA[(OpenAgenda API)] --> PP[Preprocess<br/>≤ 1 year · city · HTML strip]
-    PP --> SNAP[Parquet snapshot<br/>data/snapshots/events_eval.parquet]
+    OA[(OpenAgenda API)] --> PP[Preprocess: 1y filter, city, strip HTML]
+    PP --> SNAP[Parquet snapshot: data/snapshots/events_eval.parquet]
     SNAP --> CHUNK[Chunk texts]
-    CHUNK --> EMB[Embeddings<br/>mistral-embed]
-    EMB --> IDX[FAISS index<br/>data/index/faiss]
+    CHUNK --> EMB[Embeddings: mistral-embed]
+    EMB --> IDX[FAISS index: data/index/faiss]
   end
 
-  subgraph B[Chat runtime (RAG)]
-    Q[User question (FR/EN)] --> RET[Retriever (FAISS)<br/>MMR · k]
+  subgraph B[Chat runtime / RAG]
+    Q[User question (FR/EN)] --> RET[Retriever (FAISS)\nMMR, k]
     IDX -. load .-> RET
-    RET --> CTX[Context formatting]
-    CTX --> LLM[Mistral Chat<br/>medium→large→small fallback]
-    LLM --> ANS[Answer strictly from context<br/>or "I don't know."]
+    RET --> CTX[Format context]
+    CTX --> LLM[Mistral Chat (fallback)]
+    LLM --> ANS[Answer from context or "I don't know"]
   end
 
   subgraph C[Evaluation]
-    QR[qa_rules.csv] --> ER[Retrieval eval<br/>Recall@k]
+    QR[qa_rules.csv] --> ER[Retrieval eval: Recall@k]
     SNAP --> ER
-    QA[qa_annotated.csv] --> EG[Generation eval<br/>Exact/Contains + snapping]
+    QA[qa_annotated.csv] --> EG[Gen eval: Exact / Contains + snapping]
     IDX -. load .-> EG
     EG --> RPT[gen_eval_report.csv]
   end
 
-  ENV[.env (MISTRAL_API_KEY)] -.-> EMB
+  ENV[(.env MISTRAL_API_KEY)] -.-> EMB
   ENV -.-> LLM
 ```
 
@@ -90,7 +91,6 @@ project_root/
 └── tests/
     └── test_vector_time_city.py      # unit test: ≤1 year + city, FAISS round-trip
 ```
-
 
 ---
 
@@ -249,18 +249,6 @@ python -m src.rag.rag_pipeline --index data/index/faiss --k 12 --chat-size mediu
 * **“MISTRAL\_API\_KEY not set”**
   Ensure `.env` contains `MISTRAL_API_KEY` and your shell has the venv activated.
 
----
-
-## Deliverables checklist
-
-
-* Code (`src/`, `scripts/`, `tests/`)
-* `.env.example`, `requirements.txt`, `README.md`
-* `data/snapshots/events_eval.parquet`
-* `data/eval/qa_rules.csv`
-* `data/eval/qa_annotated.csv`
-* `data/eval/gen_eval_report.csv`
-* `docs/technical_report.pdf` (5–10 pp)
 
 ---
 
@@ -269,3 +257,6 @@ python -m src.rag.rag_pipeline --index data/index/faiss --k 12 --chat-size mediu
 Internal educational POC.
 
 ---
+
+
+Do you also want me to add a **preview screenshot of the diagram** (as PNG in `/docs/`) so that even if GitHub’s Mermaid breaks in the future, the architecture is still visible?
