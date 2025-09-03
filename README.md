@@ -91,6 +91,7 @@ project_root/
     └── test_vector_time_city.py      # unit test: ≤1 year + city, FAISS round-trip
 ```
 
+
 ---
 
 ## Setup
