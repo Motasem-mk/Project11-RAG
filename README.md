@@ -18,25 +18,25 @@ Stack: **Python · LangChain · FAISS · Mistral**.
 ```mermaid
 flowchart LR
   subgraph A[Offline build]
-    OA[(OpenAgenda API)] --> PP[Preprocess\n≤ 1 year · city · HTML strip]
-    PP --> SNAP[Parquet snapshot\n(data/snapshots/events_eval.parquet)]
+    OA[(OpenAgenda API)] --> PP[Preprocess<br/>≤ 1 year · city · HTML strip]
+    PP --> SNAP[Parquet snapshot<br/>data/snapshots/events_eval.parquet]
     SNAP --> CHUNK[Chunk texts]
-    CHUNK --> EMB[Embeddings\nmistral-embed]
-    EMB --> IDX[FAISS index\n(data/index/faiss)]
+    CHUNK --> EMB[Embeddings<br/>mistral-embed]
+    EMB --> IDX[FAISS index<br/>data/index/faiss]
   end
 
   subgraph B[Chat runtime (RAG)]
-    Q[User question (FR/EN)] --> RET[Retriever (FAISS)\nMMR · k]
+    Q[User question (FR/EN)] --> RET[Retriever (FAISS)<br/>MMR · k]
     IDX -. load .-> RET
     RET --> CTX[Context formatting]
-    CTX --> LLM[Mistral Chat\n(medium→large→small fallback)]
-    LLM --> ANS[Answer strictly from context\n(or “I don't know.”)]
+    CTX --> LLM[Mistral Chat<br/>medium→large→small fallback]
+    LLM --> ANS[Answer strictly from context<br/>or "I don't know."]
   end
 
   subgraph C[Evaluation]
-    QR[qa_rules.csv] --> ER[Retrieval eval\nRecall@k]
+    QR[qa_rules.csv] --> ER[Retrieval eval<br/>Recall@k]
     SNAP --> ER
-    QA[qa_annotated.csv] --> EG[Generation eval\nExact/Contains + snapping]
+    QA[qa_annotated.csv] --> EG[Generation eval<br/>Exact/Contains + snapping]
     IDX -. load .-> EG
     EG --> RPT[gen_eval_report.csv]
   end
