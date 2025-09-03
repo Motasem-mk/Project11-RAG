@@ -1,0 +1,21 @@
+id,question_fr,city,date_from,date_to,tags_any,postal_code,notes
+Q01,"Des idées pour enfants à Paris entre mai et octobre 2025 ?",Paris,2025-05-01,2025-10-31,"enfants|famille","",Large été/automne 2025.
+Q02,"Des événements axés sur les femmes à Paris en septembre–octobre 2024 ?",Paris,2024-09-01,2024-10-31,"femmes|matrimoine","",Limiter à 2024 Sept–Oct.
+Q03,"Des festivals d'été pour les familles à Paris (mai–sept 2025) ?",Paris,2025-05-01,2025-09-30,"festival|été|famille|enfants","",Summer focus.
+Q04,"Des activités pour enfants dans le 75001 (mai–oct 2025) ?",Paris,2025-05-01,2025-10-31,"enfants|famille",75001,Filtre postal précis.
+Q05,"Des concerts/chorales à Paris (mai–oct 2025) ?",Paris,2025-05-01,2025-10-31,"musique|concert|chorale","",Musique.
+Q06,"Des ateliers jeunesse à Paris (sept–oct 2024) ?",Paris,2024-09-01,2024-10-31,"atelier|jeunesse|enfants|famille","",Ateliers back-to-school.
+Q07,"Des événements axés sur les femmes à Paris en septembre 2025 ?",Paris,2025-09-01,2025-09-30,"femmes|matrimoine","",Femmes/matrimoine 2025.
+Q08,"Découverte des métiers pour femmes en novembre 2024 à Paris ?",Paris,2024-11-01,2024-11-30,"femmes|ingénieure|industrie","",Orientation métiers/industrie.
+Q09,"Événements sur le suffrage des femmes à Paris en septembre 2024 ?",Paris,2024-09-01,2024-09-30,"femmes|suffrage|égalité","",Histoire/droits des femmes.
+Q10,"Focus sur les artistes femmes à Paris en septembre 2024 ?",Paris,2024-09-01,2024-09-30,"femmes|art|artistes","",Artistes femmes.
+Q11,"Des idées pour enfants dans le 75001 en septembre 2025 ?",Paris,2025-09-01,2025-09-30,"enfants|famille",75001,Filtre code postal exact 75001.
+Q12,"Des événements autour des femmes dans le 75004 en septembre 2025 ?",Paris,2025-09-01,2025-09-30,"femmes|matrimoine",75004,Filtre 75004.
+Q13,"Que faire avec des enfants dans le 75005 en septembre 2025 ?",Paris,2025-09-01,2025-09-30,"enfants|famille",75005,Filtre 75005.
+Q14,"Des activités familiales dans le 75008 en septembre 2024 ?",Paris,2024-09-01,2024-09-30,"famille|enfants",75008,Filtre 75008.
+Q15,"Des activités pour enfants dans le 75019 en septembre 2024 ?",Paris,2024-09-01,2024-09-30,"enfants|famille",75019,Filtre 75019.
+Q16,"Des concerts ou événements de musique à Paris en septembre 2025 ?",Paris,2025-09-01,2025-09-30,"musique|concert|chorale","",Musique/concerts.
+Q17,"Des spectacles de danse à Paris en septembre 2025 ?",Paris,2025-09-01,2025-09-30,"danse|spectacle|ballet","",Danse.
+Q18,"Événements robotique/industrie pour femmes en novembre 2024 à Paris ?",Paris,2024-11-01,2024-11-30,"femmes|robot|industrie","",Démos robots/industrie pour femmes.
+Q19,"Des événements gratuits pour enfants à Paris en septembre 2025 ?",Paris,2025-09-01,2025-09-30,"gratuit|entrée libre|enfants","",Gratuit + enfants.
+Q20,"Patrimoine pour les familles à Paris le week-end du 20 septembre 2025 ?",Paris,2025-09-19,2025-09-21,"patrimoine|JEP|famille","",Autour des JEP (week-end).

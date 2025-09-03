@@ -1,0 +1,52 @@
+# Create .gitignore file with appropriate content
+cat > .gitignore << 'EOF'
+# Python
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pyc
+__pycache__/
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+ENV/
+.env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific generated files
+data/index/faiss/
+data/snapshots/events_eval.parquet
+data/eval/gen_eval_report.csv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+EOF
