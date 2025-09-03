@@ -1,5 +1,7 @@
 
 
+---
+
 # Concevez et déployez un système RAG — POC (OpenAgenda → FAISS → LangChain + Mistral)
 
 A Retrieval-Augmented Generation (RAG) assistant that recommends cultural events from **OpenAgenda** data.
@@ -8,7 +10,7 @@ Stack: **Python · LangChain · FAISS · Mistral**.
 * **Preprocess** OpenAgenda events (≤ 1 year, city filter, HTML strip)
 * **Index** with **FAISS** using **mistral-embed**
 * **Chatbot** answers strictly from retrieved context
-* **Evaluate** retrieval (Recall\@k) and generation (Exact/Contains) on a frozen snapshot
+* **Evaluate** retrieval (Recall at k) and generation (Exact or Contains) on a frozen snapshot
 
 > Optional artifacts (if present later): `docs/technical_report.pdf`, `slides/presentation.pptx`.
 
@@ -18,32 +20,32 @@ Stack: **Python · LangChain · FAISS · Mistral**.
 
 ```mermaid
 flowchart LR
-  subgraph A[Offline build]
-    OA[(OpenAgenda API)] --> PP[Preprocess: 1y filter, city, strip HTML]
-    PP --> SNAP[Parquet snapshot: data/snapshots/events_eval.parquet]
+  subgraph A [Offline build]
+    OA[OpenAgenda API] --> PP[Preprocess: 1y filter, city, strip HTML]
+    PP --> SNAP[Parquet snapshot]
     SNAP --> CHUNK[Chunk texts]
     CHUNK --> EMB[Embeddings: mistral-embed]
-    EMB --> IDX[FAISS index: data/index/faiss]
+    EMB --> IDX[FAISS index]
   end
 
-  subgraph B[Chat runtime / RAG]
-    Q[User question (FR/EN)] --> RET[Retriever (FAISS)\nMMR, k]
-    IDX -. load .-> RET
+  subgraph B [Chat runtime RAG]
+    Q[User question FR or EN] --> RET[Retriever FAISS MMR k]
+    IDX --> RET
     RET --> CTX[Format context]
-    CTX --> LLM[Mistral Chat (fallback)]
-    LLM --> ANS[Answer from context or "I don't know"]
+    CTX --> LLM[Mistral Chat fallback]
+    LLM --> ANS[Answer from context or I don't know]
   end
 
-  subgraph C[Evaluation]
-    QR[qa_rules.csv] --> ER[Retrieval eval: Recall@k]
+  subgraph C [Evaluation]
+    QR[qa_rules.csv] --> ER[Retrieval eval Recall k]
     SNAP --> ER
-    QA[qa_annotated.csv] --> EG[Gen eval: Exact / Contains + snapping]
-    IDX -. load .-> EG
+    QA[qa_annotated.csv] --> EG[Gen eval Exact Contains snapping]
+    IDX --> EG
     EG --> RPT[gen_eval_report.csv]
   end
 
-  ENV[(.env MISTRAL_API_KEY)] -.-> EMB
-  ENV -.-> LLM
+  ENV[env MISTRAL_API_KEY] --> EMB
+  ENV --> LLM
 ```
 
 ASCII fallback:
@@ -53,9 +55,9 @@ OpenAgenda API → Preprocess (≤1 year, city, HTML strip) → Snapshot (Parque
 → Chunk → Embeddings (mistral-embed) → FAISS index
 
 User Question → Retriever (FAISS, MMR, k) → Context → Mistral Chat → Answer
-Retrieval eval: qa_rules.csv + Snapshot → Recall@k
-Generation eval: qa_annotated.csv + Index → Exact/Contains (+ snapping) → gen_eval_report.csv
-.env → MISTRAL_API_KEY for embeddings & chat
+Retrieval eval: qa_rules.csv + Snapshot → Recall at k
+Generation eval: qa_annotated.csv + Index → Exact or Contains (+ snapping) → gen_eval_report.csv
+.env → MISTRAL_API_KEY for embeddings and chat
 ```
 
 ---
@@ -80,8 +82,8 @@ project_root/
 │
 ├── scripts/
 │   ├── make_snapshot.py              # build snapshot (Parquet)
-│   ├── eval_retrieval.py             # Recall@k on qa_rules.csv
-│   └── eval_generation.py            # Gen eval (Exact/Contains) + snapping + fallback
+│   ├── eval_retrieval.py             # Recall at k on qa_rules.csv
+│   └── eval_generation.py            # Gen eval (Exact or Contains) + snapping + fallback
 │
 ├── src/
 │   ├── data/preprocess_openagenda.py # fetch & clean OpenAgenda
@@ -142,7 +144,7 @@ python -m src.index.build_faiss \
 
 ---
 
-## 3) Retrieval evaluation (Recall\@k)
+## 3) Retrieval evaluation (Recall at k)
 
 ```bash
 python scripts/eval_retrieval.py \
@@ -161,13 +163,13 @@ Recall@20: 20/20 = 1.000
 
 ---
 
-## 4) Generation evaluation (Exact / Contains)
+## 4) Generation evaluation (Exact or Contains)
 
 Robust gen eval with:
 
-* **MMR** retrieval (`k=30`, `fetch_k=60`, λ=0.5)
-* **Snapping** LLM output to nearest title/venue/ZIP from retrieved context
-* **Normalization** (accents/emoji/punctuation)
+* **MMR** retrieval (`k=30`, `fetch_k=60`, lambda 0.5)
+* **Snapping** LLM output to nearest title venue ZIP from retrieved context
+* **Normalization** (accents emoji punctuation)
 * **Multiple golds** via `A||B`
 * **Model fallback** (medium → large → small) for capacity bursts
 
@@ -199,7 +201,7 @@ python -m src.rag.rag_pipeline \
   --chat-size medium
 ```
 
-The bot responds **only** from retrieved context (FR/EN). If missing, it says **“I don't know.”**
+The bot responds **only** from retrieved context (FR/EN). If missing, it says **I don't know**.
 
 ---
 
@@ -240,15 +242,26 @@ python -m src.rag.rag_pipeline --index data/index/faiss --k 12 --chat-size mediu
 
 ## Troubleshooting
 
-* **`service_tier_capacity_exceeded (3505)` / rate limit**
+* **service\_tier\_capacity\_exceeded 3505 / rate limit**
   The gen eval uses model fallback + retries. Re-run the command; it will switch tiers automatically.
 
-* **Tokenizer warning (Hugging Face)**
+* **Tokenizer warning Hugging Face**
   Harmless; set `HF_TOKEN` to improve batch sizing (optional).
 
-* **“MISTRAL\_API\_KEY not set”**
+* **MISTRAL\_API\_KEY not set**
   Ensure `.env` contains `MISTRAL_API_KEY` and your shell has the venv activated.
 
+---
+
+## Deliverables checklist
+
+* Code (`src/`, `scripts/`, `tests/`)
+* `.env.example`, `requirements.txt`, `README.md`
+* `data/snapshots/events_eval.parquet`
+* `data/eval/qa_rules.csv`
+* `data/eval/qa_annotated.csv`
+* `data/eval/gen_eval_report.csv`
+* `docs/technical_report.pdf` (5–10 pp)
 
 ---
 
@@ -257,6 +270,3 @@ python -m src.rag.rag_pipeline --index data/index/faiss --k 12 --chat-size mediu
 Internal educational POC.
 
 ---
-
-
-Do you also want me to add a **preview screenshot of the diagram** (as PNG in `/docs/`) so that even if GitHub’s Mermaid breaks in the future, the architecture is still visible?
